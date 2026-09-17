@@ -96,7 +96,6 @@
         .send-btn { background: var(--accent-orange); border: none; color: white; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* Скрытная надпись 36.2 справа снизу */
         .stealth-watermark {
             position: fixed;
             bottom: 6px;
@@ -140,12 +139,10 @@
         </div>
     </div>
 
-    <!-- Элемент скрытной надписи -->
     <div class="stealth-watermark">36.2</div>
 
     <script>
-        // Замените значение ниже на ваш ключ от OpenRouter (например, "sk-or-v1-...")
-        const API_KEY = "YOUR_OPENROUTER_API_KEY";
+        const API_KEY = "sk-or-v1-1201c7bd6d007fb1485f737244a44ebb931f657656c40d470bc76d9411da";
 
         let chats = JSON.parse(localStorage.getItem('mixxi_fast_chats')) || [];
         let currentChatId = null;
@@ -191,11 +188,6 @@
             const input = document.getElementById('userInput');
             const text = input.value.trim();
             if (!text) return;
-
-            if (!API_KEY || API_KEY.includes("YOUR_OPENROUTER_API_KEY") || /[^\x00-\x7F]/.test(API_KEY)) {
-                renderMessage('ai', '⚠️ Укажите валидный API-ключ OpenRouter в переменной API_KEY (без кириллицы).');
-                return;
-            }
 
             const chat = chats.find(c => c.id === currentChatId);
             if (chat.messages.length === 1) chat.title = text.slice(0, 20) + '...';
