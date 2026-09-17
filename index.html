@@ -96,6 +96,19 @@
         .send-btn { background: var(--accent-orange); border: none; color: white; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+        /* Скрытная надпись 36.2 справа снизу */
+        .stealth-watermark {
+            position: fixed;
+            bottom: 6px;
+            right: 12px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.12);
+            font-family: monospace;
+            pointer-events: none;
+            user-select: none;
+            z-index: 9999;
+        }
+
         @media (max-width: 768px) { .chat-container, .input-area { padding-left: 15px; padding-right: 15px; } }
     </style>
 </head>
@@ -127,9 +140,12 @@
         </div>
     </div>
 
+    <!-- Элемент скрытной надписи -->
+    <div class="stealth-watermark">36.2</div>
+
     <script>
-        // ВСТАВЬТЕ ВАШ НОВЫЙ КЛЮЧ OpenRouter НИЖЕ
-        const API_KEY = "ВСТАВЬТЕ_СЮДА_НОВЫЙ_КЛЮЧ_OpenRouter";
+        // Замените значение ниже на ваш ключ от OpenRouter (например, "sk-or-v1-...")
+        const API_KEY = "YOUR_OPENROUTER_API_KEY";
 
         let chats = JSON.parse(localStorage.getItem('mixxi_fast_chats')) || [];
         let currentChatId = null;
@@ -176,6 +192,11 @@
             const text = input.value.trim();
             if (!text) return;
 
+            if (!API_KEY || API_KEY.includes("YOUR_OPENROUTER_API_KEY") || /[^\x00-\x7F]/.test(API_KEY)) {
+                renderMessage('ai', '⚠️ Укажите валидный API-ключ OpenRouter в переменной API_KEY (без кириллицы).');
+                return;
+            }
+
             const chat = chats.find(c => c.id === currentChatId);
             if (chat.messages.length === 1) chat.title = text.slice(0, 20) + '...';
 
@@ -200,7 +221,7 @@
                 const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                     method: "POST",
                     headers: {
-                        "Authorization": `Bearer ${API_KEY}`,
+                        "Authorization": `Bearer ${API_KEY.trim()}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
